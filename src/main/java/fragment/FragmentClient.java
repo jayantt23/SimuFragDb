@@ -1,10 +1,6 @@
 package fragment;
 import java.sql.*;
 import java.util.*;
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
 public class FragmentClient {
 
     private Map<Integer, Connection> connectionPool;
@@ -42,7 +38,27 @@ public class FragmentClient {
      */
     public void insertStudent(String studentId, String name, int age, String email) {
         try {
-            // Your code here:
+            // Route to the correct fragment based on studentId
+            int fragmentId = router.getFragmentId(studentId);
+            
+            // Get the connection for this fragment
+            Connection conn = connectionPool.get(fragmentId);
+            
+            // Prepare the INSERT statement
+            String sql = "INSERT INTO Student  (student_id, name, age, email) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            
+            // Set parameters
+            pstmt.setString(1, studentId);
+            pstmt.setString(2, name);
+            pstmt.setInt(3, age);
+            pstmt.setString(4, email);
+            
+            // Execute the insert
+            pstmt.executeUpdate();
+            
+            // Close the prepared statement
+            pstmt.close();
             
         } catch (Exception e) {
             e.printStackTrace();
