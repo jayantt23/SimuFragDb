@@ -97,7 +97,27 @@ public class FragmentClient {
     }
     public void updateGrade(String studentId, String courseId, int newScore) {
         try {
-		// Your code here:
+            // Route to the correct fragment based on studentId
+            int fragmentId = router.getFragmentId(studentId);
+            
+            // Get the connection for this fragment
+            Connection conn = connectionPool.get(fragmentId);
+            
+            // Prepare the UPDATE statement
+            String sql = "UPDATE Grade SET score = ? WHERE student_id = ? AND course_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            
+            // Set parameters
+            pstmt.setInt(1, newScore);
+            pstmt.setString(2, studentId);
+            pstmt.setString(3, courseId);
+            
+            // Execute the update
+            pstmt.executeUpdate();
+            
+            // Close the prepared statement
+            pstmt.close();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
