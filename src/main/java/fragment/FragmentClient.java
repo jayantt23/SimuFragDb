@@ -21,8 +21,20 @@ public class FragmentClient {
      * TODO: Initialize JDBC connections to all N Fragments.
      */
     public void setupConnections() {
-		
-	
+        try {
+            Class.forName("org.postgresql.Driver");
+
+            for (int i = 0; i < numFragments; i++) {
+                String url = "jdbc:postgresql://localhost:5432/frag_" + i;
+
+                Connection conn = DriverManager.getConnection(url, "user", "password");
+                connectionPool.put(i, conn);
+                System.out.println("Connected to frag_" + i);
+            }
+        } catch (Exception e) {
+            System.out.println("Connection failed");
+            e.printStackTrace();
+        }
     }
 
     /**

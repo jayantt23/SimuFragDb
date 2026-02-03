@@ -6,9 +6,15 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      # This is just the default maintenance DB
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
       - ./init-scripts:/docker-entrypoint-initdb.d
+
+# After docker-compose up -d
+# cd .\init-scripts\
+# docker cp scripts.sql simufrag_db:/tmp/scripts.sql
+# docker exec -it simufrag_db psql -U user -d frag_0 -f /tmp/scripts.sql
+# docker exec -it simufrag_db psql -U user -d frag_1 -f /tmp/scripts.sql
+# docker exec -it simufrag_db psql -U user -d frag_2 -f /tmp/scripts.sql
