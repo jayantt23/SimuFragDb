@@ -70,7 +70,26 @@ public class FragmentClient {
      */
     public void insertGrade(String studentId, String courseId, int score) {
         try {
-            // Your code here
+            // Route to the correct fragment based on studentId
+            int fragmentId = router.getFragmentId(studentId);
+            
+            // Get the connection for this fragment
+            Connection conn = connectionPool.get(fragmentId);
+            
+            // Prepare the INSERT statement
+            String sql = "INSERT INTO Grade (student_id, course_id, score) VALUES (?, ?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            
+            // Set parameters
+            pstmt.setString(1, studentId);
+            pstmt.setString(2, courseId);
+            pstmt.setInt(3, score);
+            
+            // Execute the insert
+            pstmt.executeUpdate();
+            
+            // Close the prepared statement
+            pstmt.close();
             
         } catch (Exception e) {
             e.printStackTrace();
