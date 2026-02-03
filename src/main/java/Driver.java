@@ -18,7 +18,7 @@ public class Driver {
 
            InputStream in = Driver.class
                    .getClassLoader()
-                   .getResourceAsStream("test.txt");
+                   .getResourceAsStream("workload.txt");
 
            if (in == null) {
                System.err.println("Error: workload.txt not found on classpath.");

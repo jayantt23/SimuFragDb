@@ -155,8 +155,34 @@ public class FragmentClient {
      */
     public String getStudentProfile(String studentId) {
         try {
-            // Your code here
-            return null; 
+            // Route to the correct fragment based on studentId
+            int fragmentId = router.getFragmentId(studentId);
+            
+            // Get the connection for this fragment
+            Connection conn = connectionPool.get(fragmentId);
+            
+            // Prepare the SELECT statement
+            String sql = "SELECT name, email FROM Student WHERE student_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            
+            // Set parameter
+            pstmt.setString(1, studentId);
+            
+            // Execute the query
+            ResultSet rs = pstmt.executeQuery();
+            
+            String result = null;
+            if (rs.next()) {
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                result = name + "," + email;
+            }
+            
+            // Close resources
+            rs.close();
+            pstmt.close();
+            
+            return result;
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,6 +219,17 @@ public class FragmentClient {
     }
 
     public void closeConnections() {
-        
+        try {
+            // Close all connections in the connection pool
+            for (Connection conn : connectionPool.values()) {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            }
+            System.out.println("All connections closed successfully");
+        } catch (SQLException e) {
+            System.out.println("Error closing connections");
+            e.printStackTrace();
+        }
     }
 }
